@@ -111,6 +111,12 @@ def main() -> None:
 
     with tab_dashboard:
         st.subheader("Admin Dashboard")
+        st.info(
+            "After triaging or re-triaging a ticket, click 'Update Dashboard' to refresh the tables and metrics."
+        )
+
+        if st.button("Update Dashboard", use_container_width=True):
+            st.rerun()
 
         tickets = get_all_tickets()
 
@@ -240,7 +246,9 @@ def main() -> None:
                 if updated_ticket is None:
                     st.error("Ticket was analyzed, but saving failed.")
                 else:
-                    st.success(f"Ticket {selected_ticket['id']} triaged successfully.")
+                    st.success(
+                        f"Ticket {selected_ticket['id']} triaged successfully. Click 'Update Dashboard' to refresh the tables."
+                    )
                     selected_ticket = updated_ticket
                     analysis = selected_ticket.get("analysis") or {}
                     routing = selected_ticket.get("routing") or {}
@@ -279,6 +287,9 @@ def main() -> None:
                         )
                         st.session_state["retriage_result"] = retriage_result
                         st.session_state["retriage_ticket_id"] = selected_ticket["id"]
+                        st.success(
+                            "Re-triage completed. Click 'Update Dashboard' if you want the tables to refresh."
+                        )
                     except OllamaUnavailableError:
                         st.error(
                             "Could not connect to Ollama. Make sure Ollama is running and the model is available."
