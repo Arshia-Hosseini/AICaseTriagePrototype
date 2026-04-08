@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 
+
+from src.seed import add_seed_tickets
 from src.config import APP_TITLE, REFERENCE_DATA_FILE
 from src.llm_service import (
     InvalidModelOutputError,
@@ -141,7 +143,7 @@ def main() -> None:
                 key="submit_current_queue",
                 )
 
-        if st.button("Save Ticket", type="primary"):
+        if st.button("Send Ticket", type="primary"):
             if not title.strip():
                 st.warning("Please enter a ticket title.")
             elif not case_text.strip():
@@ -156,6 +158,13 @@ def main() -> None:
                     current_queue=current_queue,
                 )
                 st.success(f"Ticket saved successfully: {new_ticket['id']}")
+                st.rerun()
+        if st.button("Seed Sample Tickets", type="secondary"):
+            add_seed_tickets()
+            st.success("Sample tickets seeded successfully.")
+
+
+
 
     with tab_dashboard:
         st.subheader("Admin dashboard")
