@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -7,8 +7,9 @@ from src.config import TICKETS_FILE
 
 
 def _read_tickets_file() -> list[dict[str, Any]]:
-    """ Read all tickets from the local JSON store."""
-
+    """
+    read all tickets from the local JSON store.
+    """
     file_path = Path(TICKETS_FILE)
 
     if not file_path.exists():
@@ -24,7 +25,9 @@ def _read_tickets_file() -> list[dict[str, Any]]:
 
 
 def _write_tickets_file(tickets: list[dict[str, Any]]) -> None:
-    """Overwrite the local JSON store. """
+    """
+    overwrite the local JSON.
+    """
     file_path = Path(TICKETS_FILE)
 
     with file_path.open("w", encoding="utf-8") as file:
@@ -32,12 +35,12 @@ def _write_tickets_file(tickets: list[dict[str, Any]]) -> None:
 
 
 def get_all_tickets() -> list[dict[str, Any]]:
-    """ Return all tickets from the local store. """
+
     return _read_tickets_file()
 
 
 def get_ticket_by_id(ticket_id: str) -> dict[str, Any] | None:
-    """ Find one ticket by its ID."""
+
     tickets = _read_tickets_file()
 
     for ticket in tickets:
@@ -65,10 +68,11 @@ def create_ticket(
         current_queue: str = "",
 ) -> dict[str, Any]:
     """
-    Create a new ticket and save it to the local JSON store.
+    create a new ticket and save it to the local JSON store.
     """
     tickets = _read_tickets_file()
     ticket_id = _generate_ticket_id(tickets)
+    now = datetime.now(UTC).isoformat()
 
     new_ticket = {
         "id": ticket_id,
@@ -81,9 +85,13 @@ def create_ticket(
         "status": "pending",
         "analysis": None,
         "routing": None,
+        "admin_review": {
+            "admin_priority_override": None,
+            "admin_sensitive_override": None,
+        },
         "follow_up_text": "",
-        "created_at": datetime.now(UTC).isoformat(),
-        "updated_at": datetime.now(UTC).isoformat(),
+        "created_at": now,
+        "updated_at": now,
     }
 
     tickets.append(new_ticket)
@@ -99,16 +107,22 @@ def update_ticket_triage(
 ) -> dict[str, Any] | None:
     """
     Update a ticket with AI analysis and routing results.
-    Return the updated ticket, or None if not found.
     """
     tickets = _read_tickets_file()
+    now = datetime.now(UTC).isoformat()
 
     for ticket in tickets:
         if ticket.get("id") == ticket_id:
             ticket["analysis"] = analysis
             ticket["routing"] = routing
             ticket["status"] = "triaged"
-            ticket["updated_at"] = datetime.now(UTC).isoformat()
+            ticket["updated_at"] = now
+
+            if "admin_review" not in ticket or not isinstance(ticket["admin_review"], dict):
+                ticket["admin_review"] = {
+                    "admin_priority_override": None,
+                    "admin_sensitive_override": None,
+                }
 
             _write_tickets_file(tickets)
             return ticket

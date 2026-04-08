@@ -20,10 +20,12 @@ Sentiment = Literal["Positive", "Neutral", "Negative", "Very Negative"]
 
 ChurnRisk = Literal["Low", "Medium", "High"]
 
+PriorityLevel = Literal["Low", "Medium", "High", "Critical"]
+
 
 class CaseAnalysis(BaseModel):
     """
-    Structured output returned by the LLM after analyzing a support case.
+    Structured output returned by the LLM after analyzing a support ticket.
     """
 
     category: Category = Field(
@@ -42,6 +44,26 @@ class CaseAnalysis(BaseModel):
         ...,
         description="Normalized churn risk level.",
     )
+
+    priority_level: PriorityLevel = Field(
+        ...,
+        description="AI-recommended operational priority level for admin review.",
+    )
+    priority_reason: str = Field(
+        ...,
+        min_length=1,
+        description="Short explanation for why the priority level was assigned.",
+    )
+    is_sensitive: bool = Field(
+        ...,
+        description="Whether the AI believes this ticket needs special handling.",
+    )
+    sensitivity_reason: str = Field(
+        ...,
+        min_length=1,
+        description="Short explanation for why the ticket was marked or not marked as sensitive.",
+    )
+
     category_reason: str = Field(
         ...,
         min_length=1,
@@ -60,9 +82,9 @@ class CaseAnalysis(BaseModel):
     summary: str = Field(
         ...,
         min_length=1,
-        description="Short plain-English summary of the case.",
+        description="Short plain-English summary of the ticket.",
     )
 
     def to_dict(self) -> dict:
-
+        """ Return the validated model. """
         return self.model_dump()

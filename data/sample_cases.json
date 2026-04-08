@@ -1,6 +1,6 @@
 [
   {
-    "id": "case_001",
+    "id": "sample_001",
     "title": "Duplicate billing charge",
     "case_text": "Hi, I was charged twice for my monthly subscription this morning. Please fix this and refund the extra payment.",
     "customer_tier": "Standard",
@@ -10,27 +10,27 @@
     "follow_up_text": "I still have not received a response, and if this is not resolved today I will cancel my subscription."
   },
   {
-    "id": "case_002",
+    "id": "sample_002",
     "title": "Critical login issue for admin user",
     "case_text": "Our admin user cannot log in and the whole team is blocked from accessing the dashboard. We need urgent help immediately.",
     "customer_tier": "Enterprise",
     "product": "Admin Dashboard",
     "region": "US",
     "current_queue": "General Support",
-    "follow_up_text": "This is now affecting our client delivery, and leadership is asking whether we should escalate this contract risk."
+    "follow_up_text": "The problem is solved now, no further help is needed."
   },
   {
-    "id": "case_003",
-    "title": "Very negative complaint",
+    "id": "sample_003",
+    "title": "Very negative complaint about support quality",
     "case_text": "This has been an awful experience. Your support team keeps giving us copy-paste answers and nobody is solving the problem.",
     "customer_tier": "Premium",
     "product": "Analytics Suite",
     "region": "UK",
     "current_queue": "Customer Success",
-    "follow_up_text": "If nobody takes ownership today, I will make sure this is escalated internally and we will reconsider renewal."
+    "follow_up_text": "If nobody takes ownership today, I will escalate this internally and we will reconsider renewal."
   },
   {
-    "id": "case_004",
+    "id": "sample_004",
     "title": "Feature request from happy customer",
     "case_text": "We really like the product overall. It would be great if you could add an export to Excel option for reports.",
     "customer_tier": "Premium",
@@ -40,13 +40,83 @@
     "follow_up_text": "No urgency on this, just wanted to share it because it would help our workflow."
   },
   {
-    "id": "case_005",
-    "title": "Onboarding setup help",
+    "id": "sample_005",
+    "title": "Onboarding setup help before training",
     "case_text": "We just started using the platform and need help configuring our first workflow and user permissions.",
     "customer_tier": "Standard",
     "product": "Workflow Platform",
     "region": "DE",
     "current_queue": "General Support",
     "follow_up_text": "We need this configured before tomorrow's training session or the rollout may be delayed."
+  },
+  {
+    "id": "sample_006",
+    "title": "Cancellation request with high churn risk",
+    "case_text": "We are considering canceling because the platform is no longer meeting our needs and leadership wants alternatives reviewed this week.",
+    "customer_tier": "Enterprise",
+    "product": "Core Platform",
+    "region": "US",
+    "current_queue": "Customer Success",
+    "follow_up_text": "If someone can discuss pricing and our open issues today, we are still willing to talk before making a final decision."
+  },
+  {
+    "id": "sample_007",
+    "title": "Negative sentiment but low churn risk",
+    "case_text": "I am frustrated that this invoice is confusing and the wording is really poor, but we are not planning to leave. I just want someone to explain the charges clearly.",
+    "customer_tier": "Standard",
+    "product": "Billing Portal",
+    "region": "CA",
+    "current_queue": "General Support",
+    "follow_up_text": "Thanks, once someone explains the line items I think this will be fine."
+  },
+  {
+    "id": "sample_008",
+    "title": "Neutral tone with high churn risk",
+    "case_text": "Please confirm the steps to export our historical data and end service at the end of the current contract term. We are reviewing replacement vendors.",
+    "customer_tier": "Premium",
+    "product": "Data Platform",
+    "region": "AU",
+    "current_queue": "Customer Success",
+    "follow_up_text": "Our procurement team needs a final response this week so we can decide whether to renew or move forward with another vendor."
+  },
+  {
+    "id": "sample_009",
+    "title": "Account access issue for finance manager",
+    "case_text": "Our finance manager cannot access the billing area after resetting the password and needs entry before end-of-day reconciliation.",
+    "customer_tier": "Premium",
+    "product": "Billing Portal",
+    "region": "IE",
+    "current_queue": "General Support",
+    "follow_up_text": "This is now blocking our close process and leadership is asking for an update."
+  },
+  {
+    "id": "sample_010",
+    "title": "Technical issue with intermittent outage",
+    "case_text": "The API has been failing intermittently for the last hour and several requests are timing out in production.",
+    "customer_tier": "Enterprise",
+    "product": "Public API",
+    "region": "US",
+    "current_queue": "Tier 1 Technical Support",
+    "follow_up_text": "The failures are now affecting customer transactions and error rates have increased significantly."
+  },
+  {
+    "id": "sample_011",
+    "title": "Complaint that de-escalates after response",
+    "case_text": "I am extremely disappointed with how long this has taken and I do not feel anyone is owning this issue properly.",
+    "customer_tier": "Standard",
+    "product": "Support Experience",
+    "region": "UK",
+    "current_queue": "General Support",
+    "follow_up_text": "Thank you for the update. I am calmer now and just want a realistic timeline for resolution."
+  },
+  {
+    "id": "sample_012",
+    "title": "Onboarding issue that should re-route after follow-up",
+    "case_text": "We need help setting up user roles and our first workflow for next week's rollout.",
+    "customer_tier": "Premium",
+    "product": "Workflow Platform",
+    "region": "SE",
+    "current_queue": "Customer Success",
+    "follow_up_text": "Our launch is in two hours and nobody on our team can complete setup, so this has become urgent."
   }
 ]

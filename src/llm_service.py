@@ -27,11 +27,18 @@ def build_case_analysis_prompt(
         current_queue: str = "",
 ) -> str:
     """
-    Build a prompt.
+    Build a prompt that asks the local LLM to analyze a support ticket
+    and return only valid JSON.
     """
 
     return f"""
-You are analyzing a support case for an AI case triage prototype.
+You are analyzing a support ticket for an AI case triage and admin review prototype.
+
+Your job is to:
+1. classify the ticket
+2. assess urgency, sentiment, and churn risk
+3. recommend an admin priority level
+4. decide whether the ticket appears sensitive and may require special handling
 
 Return ONLY a valid JSON object.
 Do not include markdown.
@@ -65,11 +72,37 @@ Allowed churn_risk values:
 - Medium
 - High
 
+Allowed priority_level values:
+- Low
+- Medium
+- High
+- Critical
+
+Allowed is_sensitive values:
+- true
+- false
+
+Use these priority meanings:
+- Low: normal admin attention, no major business risk
+- Medium: should be reviewed soon, some business risk or customer friction
+- High: important ticket that deserves quick admin attention
+- Critical: immediate admin attention required due to business impact, escalation risk, legal/regulatory sensitivity, or strong churn/escalation signals
+
+Mark is_sensitive as true when the case appears to need special handling, such as:
+- possible legal, compliance, or regulatory concern
+- highly sensitive customer relationship or reputational risk
+- executive, enterprise, or special-handling context with elevated risk
+Otherwise mark it false.
+
 Required JSON fields:
 - category
 - urgency
 - sentiment
 - churn_risk
+- priority_level
+- priority_reason
+- is_sensitive
+- sensitivity_reason
 - category_reason
 - urgency_reason
 - churn_risk_reason
@@ -95,7 +128,7 @@ def analyze_case(
         model: str = DEFAULT_MODEL,
 ) -> CaseAnalysis:
     """
-    Send a support case to Ollama, parse the JSON response,
+    send a support ticket to Ollama, parse the JSON response,
     and validate it with Pydantic.
     """
 
