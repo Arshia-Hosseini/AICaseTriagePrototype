@@ -19,7 +19,7 @@ class InvalidModelOutputError(LLMServiceError):
     """Raised when the model returns invalid JSON or invalid schema output."""
 
 
-def build_case_analysis_prompt(
+def build_prompt(
         case_text: str,
         customer_tier: str = "",
         product: str = "",
@@ -98,6 +98,8 @@ Always provide a non-empty sensitivity_reason.
 If is_sensitive is true, explain why the ticket appears sensitive.
 If is_sensitive is false, explain briefly why the ticket does not appear to need special handling.
 
+Always provide a non-empty priority_reason.
+
 Required JSON fields:
 - category
 - urgency
@@ -123,27 +125,53 @@ current_queue: {current_queue or "N/A"}
 """.strip()
 
 
-def analyze_case(
-        case_text: str,
-        customer_tier: str = "",
-        product: str = "",
-        region: str = "",
-        current_queue: str = "",
-        model: str = DEFAULT_MODEL,
-) -> CaseAnalysis:
+def normalize_model_output(parsed_json: dict) -> dict:
     """
-    send a support ticket to Ollama, parse the JSON response,
-    and validate it with Pydantic.
+    fill small missing explanation fields when the model returns valid structure
+    but leaves some required explanation text empty.
     """
+    if not str(parsed_json.get("sensitivity_reason", "")).strip():
+        is_sensitive = parsed_json.get("is_sensitive")
 
-    prompt = build_case_analysis_prompt(
-        case_text=case_text,
-        customer_tier=customer_tier,
-        product=product,
-        region=region,
-        current_queue=current_queue,
-    )
+        if is_sensitive is True:
+            parsed_json["sensitivity_reason"] = (
+                "The ticket appears to need special handling based on its content."
+            )
+        else:
+            parsed_json["sensitivity_reason"] = (
+                "The ticket does not appear to require special handling."
+            )
 
+    if not str(parsed_json.get("priority_reason", "")).strip():
+        parsed_json["priority_reason"] = (
+            "Priority was assigned based on the overall customer and business impact."
+        )
+
+    if not str(parsed_json.get("category_reason", "")).strip():
+        parsed_json["category_reason"] = (
+            "The category was selected based on the main issue described in the ticket."
+        )
+
+    if not str(parsed_json.get("urgency_reason", "")).strip():
+        parsed_json["urgency_reason"] = (
+            "Urgency was assigned based on the level of immediate customer or business impact."
+        )
+
+    if not str(parsed_json.get("churn_risk_reason", "")).strip():
+        parsed_json["churn_risk_reason"] = (
+            "Churn risk was estimated from the customer tone, issue severity, and retention signals."
+        )
+
+    if not str(parsed_json.get("summary", "")).strip():
+        parsed_json["summary"] = "Support ticket analyzed by the AI triage system."
+
+    return parsed_json
+
+
+def _call_ollama(prompt: str, model: str) -> str:
+    """
+    Send one request to Ollama and return the raw response text produced by the model.
+    """
     payload = {
         "model": model,
         "prompt": prompt,
@@ -164,12 +192,17 @@ def analyze_case(
 
     try:
         response_data = response.json()
-        raw_text = response_data["response"]
+        return response_data["response"]
     except (ValueError, KeyError) as exc:
         raise InvalidModelOutputError(
             "Ollama returned an unexpected response format."
         ) from exc
 
+
+def _parse_and_validate(raw_text: str) -> CaseAnalysis:
+    """
+    Parse the model response as JSON.
+    """
     try:
         parsed_json = json.loads(raw_text)
     except json.JSONDecodeError as exc:
@@ -177,9 +210,48 @@ def analyze_case(
             "The model did not return valid JSON."
         ) from exc
 
+    parsed_json = normalize_model_output(parsed_json)
+
     try:
         return CaseAnalysis(**parsed_json)
     except ValidationError as exc:
         raise InvalidModelOutputError(
             f"The model returned JSON, but it did not match the required schema: {exc}"
         ) from exc
+
+
+def analyze_case(
+        case_text: str,
+        customer_tier: str = "",
+        product: str = "",
+        region: str = "",
+        current_queue: str = "",
+        model: str = DEFAULT_MODEL,
+) -> CaseAnalysis:
+    """
+    Send a support ticket to Ollama, parse the JSON response,
+    normalize minor issues, and validate it with Pydantic.
+
+    The service retries once if the model output is invalid.
+    """
+
+    prompt = build_prompt(
+        case_text=case_text,
+        customer_tier=customer_tier,
+        product=product,
+        region=region,
+        current_queue=current_queue,
+    )
+
+    last_error: Exception | None = None
+
+    for _ in range(2):
+        try:
+            raw_text = _call_ollama(prompt=prompt, model=model)
+            return _parse_and_validate(raw_text)
+        except InvalidModelOutputError as exc:
+            last_error = exc
+
+    raise InvalidModelOutputError(
+        f"Model output was invalid after retry: {last_error}"
+    )
