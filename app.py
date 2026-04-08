@@ -1,5 +1,10 @@
 import streamlit as st
 
+from src.admin_rules import (
+    get_complaint_tickets,
+    get_priority_tickets,
+    get_sensitive_tickets,
+)
 from src.config import APP_TITLE, REFERENCE_DATA_FILE
 from src.llm_service import (
     InvalidModelOutputError,
@@ -113,8 +118,42 @@ def main() -> None:
             st.info("No tickets found yet. Post a ticket or seed sample tickets first.")
             return
 
-        table_df = build_ticket_table(tickets)
-        st.dataframe(table_df, use_container_width=True)
+        pending_tickets = [
+            ticket for ticket in tickets if ticket.get("status") == "pending"
+        ]
+        priority_tickets = get_priority_tickets(tickets)
+        sensitive_tickets = get_sensitive_tickets(tickets)
+        complaint_tickets = get_complaint_tickets(tickets)
+
+        metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
+        metric_col1.metric("Total Tickets", len(tickets))
+        metric_col2.metric("Pending", len(pending_tickets))
+        metric_col3.metric("Priority", len(priority_tickets))
+        metric_col4.metric("Sensitive", len(sensitive_tickets))
+        metric_col5.metric("Complaints", len(complaint_tickets))
+
+        if priority_tickets:
+            st.divider()
+            st.subheader("Priority Tickets")
+            st.dataframe(
+                build_ticket_table(priority_tickets),
+                use_container_width=True,
+            )
+
+        if sensitive_tickets:
+            st.divider()
+            st.subheader("Sensitive Tickets")
+            st.dataframe(
+                build_ticket_table(sensitive_tickets),
+                use_container_width=True,
+            )
+
+        st.divider()
+        st.subheader("All Tickets")
+        st.dataframe(
+            build_ticket_table(tickets),
+            use_container_width=True,
+        )
 
         ticket_options = [f"{ticket['id']} — {ticket['title']}" for ticket in tickets]
 
@@ -129,6 +168,9 @@ def main() -> None:
         if selected_ticket is None:
             st.error("Could not load the selected ticket.")
             return
+
+        analysis = selected_ticket.get("analysis") or {}
+        routing = selected_ticket.get("routing") or {}
 
         st.divider()
         st.subheader("Selected Ticket")
@@ -153,12 +195,24 @@ def main() -> None:
                 )
             st.write("**Last updated:**", selected_ticket.get("updated_at") or "N/A")
 
+        badge_col1, badge_col2 = st.columns(2)
+        with badge_col1:
+            st.write(
+                "**AI Priority:**",
+                analysis.get("priority_level") or "Not analyzed yet",
+                )
+        with badge_col2:
+            st.write(
+                "**AI Sensitive:**",
+                "Yes" if analysis.get("is_sensitive") is True else "No",
+            )
+
         st.write("**Case text:**")
         st.code(selected_ticket["case_text"])
 
         if st.button("AI Triage Selected Ticket", type="primary"):
             try:
-                analysis = analyze_case(
+                analysis_result = analyze_case(
                     case_text=selected_ticket["case_text"],
                     customer_tier=selected_ticket.get("customer_tier", ""),
                     product=selected_ticket.get("product", ""),
@@ -167,15 +221,15 @@ def main() -> None:
                 )
 
                 routing_decision = recommend_queue(
-                    category=analysis.category,
-                    urgency=analysis.urgency,
-                    sentiment=analysis.sentiment,
-                    churn_risk=analysis.churn_risk,
+                    category=analysis_result.category,
+                    urgency=analysis_result.urgency,
+                    sentiment=analysis_result.sentiment,
+                    churn_risk=analysis_result.churn_risk,
                 )
 
                 updated_ticket = update_ticket_triage(
                     ticket_id=selected_ticket["id"],
-                    analysis=analysis.to_dict(),
+                    analysis=analysis_result.to_dict(),
                     routing={
                         "recommended_queue": routing_decision.recommended_queue,
                         "escalation_note": routing_decision.escalation_note,
@@ -188,6 +242,8 @@ def main() -> None:
                 else:
                     st.success(f"Ticket {selected_ticket['id']} triaged successfully.")
                     selected_ticket = updated_ticket
+                    analysis = selected_ticket.get("analysis") or {}
+                    routing = selected_ticket.get("routing") or {}
 
             except OllamaUnavailableError:
                 st.error(
@@ -198,13 +254,10 @@ def main() -> None:
             except Exception as exc:
                 st.error(f"Unexpected error during triage: {exc}")
 
-        if selected_ticket.get("analysis") and selected_ticket.get("routing"):
+        if analysis and routing:
             st.divider()
             st.subheader("Stored Triage Result")
-            render_analysis_cards(
-                selected_ticket["analysis"],
-                selected_ticket["routing"],
-            )
+            render_analysis_cards(analysis, routing)
 
             st.divider()
             st.subheader("Re-triage")
@@ -243,9 +296,9 @@ def main() -> None:
                 st.subheader("Before / After Comparison")
 
                 comparison_df = build_comparison_table(
-                    original_analysis=selected_ticket["analysis"],
+                    original_analysis=analysis,
                     updated_analysis=retriage_result["analysis"],
-                    original_routing=selected_ticket["routing"],
+                    original_routing=routing,
                     updated_routing=retriage_result["routing"],
                 )
                 st.dataframe(comparison_df, use_container_width=True)
@@ -255,8 +308,8 @@ def main() -> None:
                 with col_original:
                     st.markdown("### Original Assessment")
                     render_analysis_cards(
-                        selected_ticket["analysis"],
-                        selected_ticket["routing"],
+                        analysis,
+                        routing,
                     )
 
                 with col_updated:

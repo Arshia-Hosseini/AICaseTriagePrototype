@@ -14,6 +14,8 @@ def build_ticket_table(tickets: list[dict]) -> pd.DataFrame:
                 "ID": ticket.get("id", ""),
                 "Title": ticket.get("title", ""),
                 "Status": ticket.get("status", ""),
+                "Priority": analysis.get("priority_level", "") or "—",
+                "Sensitive": "Yes" if analysis.get("is_sensitive") else "No",
                 "Current Queue": ticket.get("current_queue", "") or "N/A",
                 "Recommended Queue": routing.get("recommended_queue", "") or "—",
                 "Category": analysis.get("category", "") or "—",
@@ -32,6 +34,13 @@ def render_analysis_cards(analysis: dict, routing: dict) -> None:
     metric_col3.metric("Sentiment", analysis.get("sentiment", "—"))
     metric_col4.metric("Churn Risk", analysis.get("churn_risk", "—"))
 
+    admin_col1, admin_col2 = st.columns(2)
+    admin_col1.metric("AI Recommended Priority", analysis.get("priority_level", "—"))
+    admin_col2.metric(
+        "AI Recommended Sensitivity",
+        "Yes" if analysis.get("is_sensitive") else "No",
+    )
+
     st.markdown("### Routing Result")
     st.write("**Recommended queue:**", routing.get("recommended_queue") or "None")
     st.write("**Escalation note:**", routing.get("escalation_note") or "None")
@@ -42,6 +51,11 @@ def render_analysis_cards(analysis: dict, routing: dict) -> None:
     st.write("**Category reason:**", analysis.get("category_reason") or "None")
     st.write("**Urgency reason:**", analysis.get("urgency_reason") or "None")
     st.write("**Churn risk reason:**", analysis.get("churn_risk_reason") or "None")
+    st.write("**Priority reason:**", analysis.get("priority_reason") or "None")
+    st.write(
+        "**Sensitivity reason:**",
+        analysis.get("sensitivity_reason") or "None",
+        )
 
 
 def build_comparison_table(
@@ -72,6 +86,16 @@ def build_comparison_table(
             "Updated": updated_analysis.get("churn_risk", ""),
         },
         {
+            "Field": "Priority",
+            "Original": original_analysis.get("priority_level", ""),
+            "Updated": updated_analysis.get("priority_level", ""),
+        },
+        {
+            "Field": "Sensitive",
+            "Original": "Yes" if original_analysis.get("is_sensitive") else "No",
+            "Updated": "Yes" if updated_analysis.get("is_sensitive") else "No",
+        },
+        {
             "Field": "Recommended Queue",
             "Original": original_routing.get("recommended_queue", ""),
             "Updated": updated_routing.get("recommended_queue", ""),
@@ -93,7 +117,3 @@ def show_flash_messages() -> None:
     if st.session_state.pop("ticket_post_success", False):
         ticket_id = st.session_state.pop("ticket_post_success_id", "")
         st.success(f"Ticket saved successfully: {ticket_id}")
-
-    if st.session_state.pop("triage_success", False):
-        ticket_id = st.session_state.pop("triage_success_id", "")
-        st.success(f"Ticket {ticket_id} triaged successfully.")

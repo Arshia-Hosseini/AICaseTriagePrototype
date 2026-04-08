@@ -106,7 +106,7 @@ def update_ticket_triage(
         routing: dict[str, Any],
 ) -> dict[str, Any] | None:
     """
-    Update a ticket with AI analysis and routing results.
+    update a ticket with AI analysis and routing results.
     """
     tickets = _read_tickets_file()
     now = datetime.now(UTC).isoformat()

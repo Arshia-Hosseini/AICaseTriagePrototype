@@ -94,6 +94,10 @@ Mark is_sensitive as true when the case appears to need special handling, such a
 - executive, enterprise, or special-handling context with elevated risk
 Otherwise mark it false.
 
+Always provide a non-empty sensitivity_reason.
+If is_sensitive is true, explain why the ticket appears sensitive.
+If is_sensitive is false, explain briefly why the ticket does not appear to need special handling.
+
 Required JSON fields:
 - category
 - urgency
