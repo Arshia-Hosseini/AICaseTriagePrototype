@@ -1,0 +1,38 @@
+{
+    "categories": [
+        "Billing",
+        "Technical Issue",
+        "Account Access",
+        "Complaint",
+        "Cancellation / Retention",
+        "Feature Request",
+        "Onboarding / Setup",
+        "Other"
+    ],
+    "urgency_levels": [
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+    ],
+    "sentiment_levels": [
+        "Positive",
+        "Neutral",
+        "Negative",
+        "Very Negative"
+    ],
+    "churn_risk_levels": [
+        "Low",
+        "Medium",
+        "High"
+    ],
+    "queues": [
+        "General Support",
+        "Billing Support",
+        "Tier 1 Technical Support",
+        "Tier 2 Technical Support",
+        "Customer Success",
+        "Retention Team",
+        "Escalations Desk"
+    ]
+}

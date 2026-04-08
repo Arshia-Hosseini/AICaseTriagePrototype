@@ -1,0 +1,52 @@
+[
+  {
+    "id": "case_001",
+    "title": "Duplicate billing charge",
+    "case_text": "Hi, I was charged twice for my monthly subscription this morning. Please fix this and refund the extra payment.",
+    "customer_tier": "Standard",
+    "product": "Subscription Platform",
+    "region": "EU",
+    "current_queue": "General Support",
+    "follow_up_text": "I still have not received a response, and if this is not resolved today I will cancel my subscription."
+  },
+  {
+    "id": "case_002",
+    "title": "Critical login issue for admin user",
+    "case_text": "Our admin user cannot log in and the whole team is blocked from accessing the dashboard. We need urgent help immediately.",
+    "customer_tier": "Enterprise",
+    "product": "Admin Dashboard",
+    "region": "US",
+    "current_queue": "General Support",
+    "follow_up_text": "This is now affecting our client delivery, and leadership is asking whether we should escalate this contract risk."
+  },
+  {
+    "id": "case_003",
+    "title": "Very negative complaint",
+    "case_text": "This has been an awful experience. Your support team keeps giving us copy-paste answers and nobody is solving the problem.",
+    "customer_tier": "Premium",
+    "product": "Analytics Suite",
+    "region": "UK",
+    "current_queue": "Customer Success",
+    "follow_up_text": "If nobody takes ownership today, I will make sure this is escalated internally and we will reconsider renewal."
+  },
+  {
+    "id": "case_004",
+    "title": "Feature request from happy customer",
+    "case_text": "We really like the product overall. It would be great if you could add an export to Excel option for reports.",
+    "customer_tier": "Premium",
+    "product": "Reporting Module",
+    "region": "NL",
+    "current_queue": "Customer Success",
+    "follow_up_text": "No urgency on this, just wanted to share it because it would help our workflow."
+  },
+  {
+    "id": "case_005",
+    "title": "Onboarding setup help",
+    "case_text": "We just started using the platform and need help configuring our first workflow and user permissions.",
+    "customer_tier": "Standard",
+    "product": "Workflow Platform",
+    "region": "DE",
+    "current_queue": "General Support",
+    "follow_up_text": "We need this configured before tomorrow's training session or the rollout may be delayed."
+  }
+]
