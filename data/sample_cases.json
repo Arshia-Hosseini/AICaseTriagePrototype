@@ -7,7 +7,7 @@
     "product": "Subscription Platform",
     "region": "EU",
     "current_queue": "General Support",
-    "follow_up_text": "I still have not received a response, and if this is not resolved today I will cancel my subscription."
+    "follow_up_text": ""
   },
   {
     "id": "sample_002",
@@ -17,7 +17,7 @@
     "product": "Admin Dashboard",
     "region": "US",
     "current_queue": "General Support",
-    "follow_up_text": "The problem is solved now, no further help is needed."
+    "follow_up_text": ""
   },
   {
     "id": "sample_003",
@@ -27,7 +27,7 @@
     "product": "Analytics Suite",
     "region": "UK",
     "current_queue": "Customer Success",
-    "follow_up_text": "If nobody takes ownership today, I will escalate this internally and we will reconsider renewal."
+    "follow_up_text": ""
   },
   {
     "id": "sample_004",
@@ -37,7 +37,7 @@
     "product": "Reporting Module",
     "region": "NL",
     "current_queue": "Customer Success",
-    "follow_up_text": "No urgency on this, just wanted to share it because it would help our workflow."
+    "follow_up_text": ""
   },
   {
     "id": "sample_005",
@@ -47,7 +47,7 @@
     "product": "Workflow Platform",
     "region": "DE",
     "current_queue": "General Support",
-    "follow_up_text": "We need this configured before tomorrow's training session or the rollout may be delayed."
+    "follow_up_text": ""
   },
   {
     "id": "sample_006",
@@ -57,7 +57,7 @@
     "product": "Core Platform",
     "region": "US",
     "current_queue": "Customer Success",
-    "follow_up_text": "If someone can discuss pricing and our open issues today, we are still willing to talk before making a final decision."
+    "follow_up_text": ""
   },
   {
     "id": "sample_007",
@@ -67,7 +67,7 @@
     "product": "Billing Portal",
     "region": "CA",
     "current_queue": "General Support",
-    "follow_up_text": "Thanks, once someone explains the line items I think this will be fine."
+    "follow_up_text": ""
   },
   {
     "id": "sample_008",
@@ -77,7 +77,7 @@
     "product": "Data Platform",
     "region": "AU",
     "current_queue": "Customer Success",
-    "follow_up_text": "Our procurement team needs a final response this week so we can decide whether to renew or move forward with another vendor."
+    "follow_up_text": ""
   },
   {
     "id": "sample_009",
@@ -87,7 +87,7 @@
     "product": "Billing Portal",
     "region": "IE",
     "current_queue": "General Support",
-    "follow_up_text": "This is now blocking our close process and leadership is asking for an update."
+    "follow_up_text": ""
   },
   {
     "id": "sample_010",
@@ -97,26 +97,66 @@
     "product": "Public API",
     "region": "US",
     "current_queue": "Tier 1 Technical Support",
-    "follow_up_text": "The failures are now affecting customer transactions and error rates have increased significantly."
+    "follow_up_text": ""
   },
   {
     "id": "sample_011",
-    "title": "Complaint that de-escalates after response",
-    "case_text": "I am extremely disappointed with how long this has taken and I do not feel anyone is owning this issue properly.",
-    "customer_tier": "Standard",
-    "product": "Support Experience",
-    "region": "UK",
-    "current_queue": "General Support",
-    "follow_up_text": "Thank you for the update. I am calmer now and just want a realistic timeline for resolution."
+    "title": "Regulatory complaint about data export rights",
+    "case_text": "We need an immediate explanation for why our customer data export request has not been fulfilled. Our legal and compliance teams are reviewing whether this violates our regulatory obligations and data access rights.",
+    "customer_tier": "Enterprise",
+    "product": "Data Platform",
+    "region": "EU",
+    "current_queue": "Customer Success",
+    "follow_up_text": ""
   },
   {
     "id": "sample_012",
-    "title": "Onboarding issue that should re-route after follow-up",
-    "case_text": "We need help setting up user roles and our first workflow for next week's rollout.",
-    "customer_tier": "Premium",
+    "title": "Possible security incident affecting enterprise account",
+    "case_text": "We observed suspicious login activity on an enterprise administrator account and need this investigated immediately. Our security team is concerned there may have been unauthorized access.",
+    "customer_tier": "Enterprise",
+    "product": "Admin Dashboard",
+    "region": "US",
+    "current_queue": "Tier 1 Technical Support",
+    "follow_up_text": ""
+  },
+  {
+    "id": "sample_013",
+    "title": "Executive escalation over failed production rollout",
+    "case_text": "Our VP is now involved because the rollout failed during a customer-facing launch and we need direct ownership from your side today.",
+    "customer_tier": "Enterprise",
     "product": "Workflow Platform",
-    "region": "SE",
+    "region": "UK",
     "current_queue": "Customer Success",
-    "follow_up_text": "Our launch is in two hours and nobody on our team can complete setup, so this has become urgent."
+    "follow_up_text": ""
+  },
+  {
+    "id": "sample_014",
+    "title": "Audit request for billing records",
+    "case_text": "Our finance and audit teams require a full explanation of historical invoice adjustments and credit changes before our compliance review closes tomorrow.",
+    "customer_tier": "Enterprise",
+    "product": "Billing Portal",
+    "region": "DE",
+    "current_queue": "Billing Support",
+    "follow_up_text": ""
+  },
+  {
+    "id": "sample_015",
+    "title": "Legal review of contract termination process",
+    "case_text": "Our legal team is reviewing the contract termination language and needs confirmation of the exact offboarding steps, retained data policy, and service end timeline.",
+    "customer_tier": "Premium",
+    "product": "Core Platform",
+    "region": "US",
+    "current_queue": "Customer Success",
+    "follow_up_text": ""
+  },
+  {
+    "id": "sample_016",
+    "title": "Complaint mentioning regulator escalation",
+    "case_text": "If this complaint is not resolved promptly, we are prepared to raise it with the relevant regulator because we do not believe your handling meets your obligations.",
+    "customer_tier": "Premium",
+    "product": "Support Experience",
+    "region": "UK",
+    "current_queue": "General Support",
+    "follow_up_text": ""
   }
 ]

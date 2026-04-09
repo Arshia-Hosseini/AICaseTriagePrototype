@@ -23,7 +23,7 @@ from src.services.ticket_manager import (
     update_admin_review,
     update_ticket_triage,
 )
-from src.ui.ui import (
+from src.ui.ui_helper import (
     build_ticket_table,
     render_analysis_cards,
     show_flash_messages,

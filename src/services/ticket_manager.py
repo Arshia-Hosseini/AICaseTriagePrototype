@@ -48,7 +48,7 @@ def get_ticket_by_id(ticket_id: str) -> dict[str, Any] | None:
 
 def _generate_ticket_id(existing_tickets: list[dict[str, Any]]) -> str:
     """
-    Generate the next ticket ID in a simple sequential format.
+    Generate the next ticket ID.
     Example: ticket_001, ticket_002, ...
     """
     next_number = len(existing_tickets) + 1

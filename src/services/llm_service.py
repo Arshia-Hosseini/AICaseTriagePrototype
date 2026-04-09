@@ -27,8 +27,7 @@ def build_prompt(
         current_queue: str = "",
 ) -> str:
     """
-    Build a prompt that asks the local LLM to analyze a support ticket
-    and return only valid JSON.
+    Build a prompt.
     """
 
     return f"""

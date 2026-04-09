@@ -2,7 +2,6 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-
 Category = Literal[
     "Billing",
     "Technical Issue",
@@ -86,5 +85,4 @@ class CaseAnalysis(BaseModel):
     )
 
     def to_dict(self) -> dict:
-        """ Return the validated model. """
         return self.model_dump()
