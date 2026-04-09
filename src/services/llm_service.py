@@ -3,8 +3,8 @@ import json
 import requests
 from pydantic import ValidationError
 
-from src.config import DEFAULT_MODEL, OLLAMA_BASE_URL
-from src.schema import CaseAnalysis
+from src.core.config import DEFAULT_MODEL, OLLAMA_BASE_URL
+from src.core.schema import CaseAnalysis
 
 
 class LLMServiceError(Exception):

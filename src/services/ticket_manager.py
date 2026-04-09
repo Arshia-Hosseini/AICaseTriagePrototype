@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.config import TICKETS_FILE
+from src.core.config import TICKETS_FILE
 
 
 def _read_tickets_file() -> list[dict[str, Any]]:

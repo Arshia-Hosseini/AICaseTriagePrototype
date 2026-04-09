@@ -1,20 +1,21 @@
 import streamlit as st
 
-from src.admin_rules import (
+from src.services.admin_rules import (
     get_complaint_tickets,
+    get_pending_tickets,
     get_priority_tickets,
     get_sensitive_tickets,
+    triage_all_pending_tickets,
 )
-from src.config import APP_TITLE, REFERENCE_DATA_FILE
-from src.llm_service import (
+from src.core.config import APP_TITLE, REFERENCE_DATA_FILE
+from src.services.llm_service import (
     InvalidModelOutputError,
     OllamaUnavailableError,
     analyze_case,
 )
-from src.retriage import retriage_ticket
-from src.routing import recommend_queue
-from src.seed import add_seed_tickets
-from src.ticket_manager import (
+from src.services.routing import recommend_queue
+from src.services.seed import add_seed_tickets
+from src.services.ticket_manager import (
     create_ticket,
     get_all_tickets,
     get_ticket_by_id,
@@ -22,13 +23,12 @@ from src.ticket_manager import (
     update_admin_review,
     update_ticket_triage,
 )
-from src.ui import (
-    build_comparison_table,
+from src.ui.ui import (
     build_ticket_table,
     render_analysis_cards,
     show_flash_messages,
 )
-from src.utils import load_json_file
+from src.core.utils import load_json_file
 
 
 def main() -> None:
@@ -114,11 +114,8 @@ def main() -> None:
     with tab_dashboard:
         st.subheader("Admin Dashboard")
         st.info(
-            "After triaging or re-triaging a ticket, click 'Update Dashboard' to refresh the tables and metrics."
+            "After triaging a ticket, click 'Update Dashboard' to refresh the tables and metrics."
         )
-
-        if st.button("Update Dashboard", use_container_width=True):
-            st.rerun()
 
         tickets = get_all_tickets()
 
@@ -126,9 +123,40 @@ def main() -> None:
             st.info("No tickets found yet. Post a ticket or seed sample tickets first.")
             return
 
-        pending_tickets = [
-            ticket for ticket in tickets if ticket.get("status") == "pending"
-        ]
+        top_action_col1, top_action_col2 = st.columns([1, 1])
+
+        with top_action_col1:
+            if st.button(
+                    "Triage All Pending Tickets",
+                    type="primary",
+                    use_container_width=True,
+            ):
+                batch_result = triage_all_pending_tickets(tickets)
+
+                total_pending = batch_result["total_pending"]
+                succeeded = batch_result["succeeded"]
+                failed = batch_result["failed"]
+
+                if total_pending == 0:
+                    st.info("No pending tickets to triage.")
+                elif failed == 0:
+                    st.success(
+                        f"Triage complete. Processed {total_pending} pending tickets: "
+                        f"{succeeded} succeeded, {failed} failed. "
+                        "Click 'Update Dashboard' to refresh the tables."
+                    )
+                else:
+                    st.warning(
+                        f"Triage complete. Processed {total_pending} pending tickets: "
+                        f"{succeeded} succeeded, {failed} failed. "
+                        "Click 'Update Dashboard' to refresh the tables."
+                    )
+
+        with top_action_col2:
+            if st.button("Update Dashboard", use_container_width=True):
+                st.rerun()
+
+        pending_tickets = get_pending_tickets(tickets)
         priority_tickets = get_priority_tickets(tickets)
         sensitive_tickets = get_sensitive_tickets(tickets)
         complaint_tickets = get_complaint_tickets(tickets)
@@ -260,13 +288,13 @@ def main() -> None:
 
             priority_options = {
                 "Follow AI": None,
-                "Priority": True,
-                "Not Priority": False,
+                "Force On": True,
+                "Force Off": False,
             }
             sensitive_options = {
                 "Follow AI": None,
-                "Sensitive": True,
-                "Not sensitive": False,
+                "Force On": True,
+                "Force Off": False,
             }
 
             current_priority_override = admin_review.get("admin_priority_override")
@@ -331,73 +359,6 @@ def main() -> None:
             st.divider()
             st.subheader("Stored Triage Result")
             render_analysis_cards(selected_ticket, analysis, routing)
-
-            st.divider()
-            st.subheader("Re-triage")
-            follow_up_text = st.text_area(
-                "Add a follow-up customer message",
-                height=140,
-                placeholder="Example: If this issue is not resolved today, we may cancel our subscription.",
-                key="retriage_followup",
-            )
-
-            if st.button("Run Re-triage"):
-                if not follow_up_text.strip():
-                    st.warning("Please enter a follow-up message first.")
-                else:
-                    try:
-                        retriage_result = retriage_ticket(
-                            ticket=selected_ticket,
-                            follow_up_text=follow_up_text,
-                        )
-                        st.session_state["retriage_result"] = retriage_result
-                        st.session_state["retriage_ticket_id"] = selected_ticket["id"]
-                        st.success(
-                            "Re-triage completed. Click 'Update Dashboard' if you want the tables to refresh."
-                        )
-                    except OllamaUnavailableError:
-                        st.error(
-                            "Could not connect to Ollama. Make sure Ollama is running and the model is available."
-                        )
-                    except InvalidModelOutputError as exc:
-                        st.error(f"Model output was invalid: {exc}")
-                    except Exception as exc:
-                        st.error(f"Unexpected error during re-triage: {exc}")
-
-            retriage_result = st.session_state.get("retriage_result")
-            retriage_ticket_id = st.session_state.get("retriage_ticket_id")
-
-            if retriage_result and retriage_ticket_id == selected_ticket["id"]:
-                st.divider()
-                st.subheader("Before / After Comparison")
-
-                comparison_df = build_comparison_table(
-                    original_ticket=selected_ticket,
-                    updated_ticket=selected_ticket,
-                    original_analysis=analysis,
-                    updated_analysis=retriage_result["analysis"],
-                    original_routing=routing,
-                    updated_routing=retriage_result["routing"],
-                )
-                st.dataframe(comparison_df, use_container_width=True)
-
-                col_original, col_updated = st.columns(2)
-
-                with col_original:
-                    st.markdown("### Original Assessment")
-                    render_analysis_cards(
-                        selected_ticket,
-                        analysis,
-                        routing,
-                    )
-
-                with col_updated:
-                    st.markdown("### Updated Assessment")
-                    render_analysis_cards(
-                        selected_ticket,
-                        retriage_result["analysis"],
-                        retriage_result["routing"],
-                    )
 
 
 if __name__ == "__main__":

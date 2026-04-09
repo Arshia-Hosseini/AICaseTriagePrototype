@@ -1,7 +1,7 @@
 from typing import Any
 
-from src.llm_service import analyze_case
-from src.routing import recommend_queue
+from src.services.llm_service import analyze_case
+from src.services.routing import recommend_queue
 
 
 def build_retriage_case_text(original_case_text: str, follow_up_text: str) -> str:

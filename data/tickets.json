@@ -1,1 +1,230 @@
-[]
+[
+  {
+    "id": "ticket_001",
+    "title": "Duplicate billing charge",
+    "case_text": "Hi, I was charged twice for my monthly subscription this morning. Please fix this and refund the extra payment.",
+    "customer_tier": "Standard",
+    "product": "Subscription Platform",
+    "region": "EU",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.352890+00:00",
+    "updated_at": "2026-04-09T02:38:18.352890+00:00"
+  },
+  {
+    "id": "ticket_002",
+    "title": "Critical login issue for admin user",
+    "case_text": "Our admin user cannot log in and the whole team is blocked from accessing the dashboard. We need urgent help immediately.",
+    "customer_tier": "Enterprise",
+    "product": "Admin Dashboard",
+    "region": "US",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.353596+00:00",
+    "updated_at": "2026-04-09T02:38:18.353596+00:00"
+  },
+  {
+    "id": "ticket_003",
+    "title": "Very negative complaint about support quality",
+    "case_text": "This has been an awful experience. Your support team keeps giving us copy-paste answers and nobody is solving the problem.",
+    "customer_tier": "Premium",
+    "product": "Analytics Suite",
+    "region": "UK",
+    "current_queue": "Customer Success",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.354227+00:00",
+    "updated_at": "2026-04-09T02:38:18.354227+00:00"
+  },
+  {
+    "id": "ticket_004",
+    "title": "Feature request from happy customer",
+    "case_text": "We really like the product overall. It would be great if you could add an export to Excel option for reports.",
+    "customer_tier": "Premium",
+    "product": "Reporting Module",
+    "region": "NL",
+    "current_queue": "Customer Success",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.354721+00:00",
+    "updated_at": "2026-04-09T02:38:18.354721+00:00"
+  },
+  {
+    "id": "ticket_005",
+    "title": "Onboarding setup help before training",
+    "case_text": "We just started using the platform and need help configuring our first workflow and user permissions.",
+    "customer_tier": "Standard",
+    "product": "Workflow Platform",
+    "region": "DE",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.355166+00:00",
+    "updated_at": "2026-04-09T02:38:18.355166+00:00"
+  },
+  {
+    "id": "ticket_006",
+    "title": "Cancellation request with high churn risk",
+    "case_text": "We are considering canceling because the platform is no longer meeting our needs and leadership wants alternatives reviewed this week.",
+    "customer_tier": "Enterprise",
+    "product": "Core Platform",
+    "region": "US",
+    "current_queue": "Customer Success",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.355664+00:00",
+    "updated_at": "2026-04-09T02:38:18.355664+00:00"
+  },
+  {
+    "id": "ticket_007",
+    "title": "Negative sentiment but low churn risk",
+    "case_text": "I am frustrated that this invoice is confusing and the wording is really poor, but we are not planning to leave. I just want someone to explain the charges clearly.",
+    "customer_tier": "Standard",
+    "product": "Billing Portal",
+    "region": "CA",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.356182+00:00",
+    "updated_at": "2026-04-09T02:38:18.356182+00:00"
+  },
+  {
+    "id": "ticket_008",
+    "title": "Neutral tone with high churn risk",
+    "case_text": "Please confirm the steps to export our historical data and end service at the end of the current contract term. We are reviewing replacement vendors.",
+    "customer_tier": "Premium",
+    "product": "Data Platform",
+    "region": "AU",
+    "current_queue": "Customer Success",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.356699+00:00",
+    "updated_at": "2026-04-09T02:38:18.356699+00:00"
+  },
+  {
+    "id": "ticket_009",
+    "title": "Account access issue for finance manager",
+    "case_text": "Our finance manager cannot access the billing area after resetting the password and needs entry before end-of-day reconciliation.",
+    "customer_tier": "Premium",
+    "product": "Billing Portal",
+    "region": "IE",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.357260+00:00",
+    "updated_at": "2026-04-09T02:38:18.357260+00:00"
+  },
+  {
+    "id": "ticket_010",
+    "title": "Technical issue with intermittent outage",
+    "case_text": "The API has been failing intermittently for the last hour and several requests are timing out in production.",
+    "customer_tier": "Enterprise",
+    "product": "Public API",
+    "region": "US",
+    "current_queue": "Tier 1 Technical Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.358034+00:00",
+    "updated_at": "2026-04-09T02:38:18.358034+00:00"
+  },
+  {
+    "id": "ticket_011",
+    "title": "Complaint that de-escalates after response",
+    "case_text": "I am extremely disappointed with how long this has taken and I do not feel anyone is owning this issue properly.",
+    "customer_tier": "Standard",
+    "product": "Support Experience",
+    "region": "UK",
+    "current_queue": "General Support",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.358635+00:00",
+    "updated_at": "2026-04-09T02:38:18.358635+00:00"
+  },
+  {
+    "id": "ticket_012",
+    "title": "Onboarding issue that should re-route after follow-up",
+    "case_text": "We need help setting up user roles and our first workflow for next week's rollout.",
+    "customer_tier": "Premium",
+    "product": "Workflow Platform",
+    "region": "SE",
+    "current_queue": "Customer Success",
+    "status": "pending",
+    "analysis": null,
+    "routing": null,
+    "admin_review": {
+      "admin_priority_override": null,
+      "admin_sensitive_override": null
+    },
+    "follow_up_text": "",
+    "created_at": "2026-04-09T02:38:18.359169+00:00",
+    "updated_at": "2026-04-09T02:38:18.359169+00:00"
+  }
+]

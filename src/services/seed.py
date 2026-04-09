@@ -1,6 +1,6 @@
-from src.config import SAMPLE_CASES_FILE
-from src.ticket_manager import create_ticket, get_all_tickets
-from src.utils import load_json_file
+from src.core.config import SAMPLE_CASES_FILE
+from src.services.ticket_manager import create_ticket, get_all_tickets
+from src.core.utils import load_json_file
 
 
 def get_sample_cases() -> list[dict]:

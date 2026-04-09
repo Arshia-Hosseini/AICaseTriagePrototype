@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.admin_rules import is_final_priority, is_final_sensitive
+from src.services.admin_rules import is_final_priority, is_final_sensitive
 
 
 def _priority_badge(priority_level: str) -> str:
