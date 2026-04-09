@@ -18,6 +18,8 @@ from src.ticket_manager import (
     create_ticket,
     get_all_tickets,
     get_ticket_by_id,
+    reset_admin_review,
+    update_admin_review,
     update_ticket_triage,
 )
 from src.ui import (
@@ -177,6 +179,7 @@ def main() -> None:
 
         analysis = selected_ticket.get("analysis") or {}
         routing = selected_ticket.get("routing") or {}
+        admin_review = selected_ticket.get("admin_review") or {}
 
         st.divider()
         st.subheader("Selected Ticket")
@@ -200,18 +203,6 @@ def main() -> None:
                 selected_ticket.get("current_queue") or "N/A",
                 )
             st.write("**Last updated:**", selected_ticket.get("updated_at") or "N/A")
-
-        badge_col1, badge_col2 = st.columns(2)
-        with badge_col1:
-            st.write(
-                "**AI Priority:**",
-                analysis.get("priority_level") or "Not analyzed yet",
-                )
-        with badge_col2:
-            st.write(
-                "**AI Sensitive:**",
-                "Yes" if analysis.get("is_sensitive") is True else "No",
-            )
 
         st.write("**Case text:**")
         st.code(selected_ticket["case_text"])
@@ -252,6 +243,7 @@ def main() -> None:
                     selected_ticket = updated_ticket
                     analysis = selected_ticket.get("analysis") or {}
                     routing = selected_ticket.get("routing") or {}
+                    admin_review = selected_ticket.get("admin_review") or {}
 
             except OllamaUnavailableError:
                 st.error(
@@ -262,10 +254,83 @@ def main() -> None:
             except Exception as exc:
                 st.error(f"Unexpected error during triage: {exc}")
 
+        if analysis:
+            st.divider()
+            st.subheader("Admin Override Controls")
+
+            priority_options = {
+                "Follow AI": None,
+                "Priority": True,
+                "Not Priority": False,
+            }
+            sensitive_options = {
+                "Follow AI": None,
+                "Sensitive": True,
+                "Not sensitive": False,
+            }
+
+            current_priority_override = admin_review.get("admin_priority_override")
+            current_sensitive_override = admin_review.get("admin_sensitive_override")
+
+            priority_label = next(
+                label
+                for label, value in priority_options.items()
+                if value == current_priority_override
+            )
+            sensitive_label = next(
+                label
+                for label, value in sensitive_options.items()
+                if value == current_sensitive_override
+            )
+
+            override_col1, override_col2 = st.columns(2)
+
+            with override_col1:
+                selected_priority_label = st.selectbox(
+                    "Priority Override",
+                    list(priority_options.keys()),
+                    index=list(priority_options.keys()).index(priority_label),
+                    key=f"priority_override_{selected_ticket['id']}",
+                )
+
+            with override_col2:
+                selected_sensitive_label = st.selectbox(
+                    "Sensitive Override",
+                    list(sensitive_options.keys()),
+                    index=list(sensitive_options.keys()).index(sensitive_label),
+                    key=f"sensitive_override_{selected_ticket['id']}",
+                )
+
+            save_col1, save_col2 = st.columns([1, 1])
+
+            with save_col1:
+                if st.button("Save Overrides", use_container_width=True):
+                    updated_ticket = update_admin_review(
+                        ticket_id=selected_ticket["id"],
+                        priority_override=priority_options[selected_priority_label],
+                        sensitive_override=sensitive_options[selected_sensitive_label],
+                    )
+                    if updated_ticket is not None:
+                        selected_ticket = updated_ticket
+                        analysis = selected_ticket.get("analysis") or {}
+                        routing = selected_ticket.get("routing") or {}
+                        admin_review = selected_ticket.get("admin_review") or {}
+                        st.success("Admin overrides saved.")
+
+            with save_col2:
+                if st.button("Reset All Overrides", use_container_width=True):
+                    updated_ticket = reset_admin_review(selected_ticket["id"])
+                    if updated_ticket is not None:
+                        selected_ticket = updated_ticket
+                        analysis = selected_ticket.get("analysis") or {}
+                        routing = selected_ticket.get("routing") or {}
+                        admin_review = selected_ticket.get("admin_review") or {}
+                        st.info("All admin overrides were reset.")
+
         if analysis and routing:
             st.divider()
             st.subheader("Stored Triage Result")
-            render_analysis_cards(analysis, routing)
+            render_analysis_cards(selected_ticket, analysis, routing)
 
             st.divider()
             st.subheader("Re-triage")
@@ -307,6 +372,8 @@ def main() -> None:
                 st.subheader("Before / After Comparison")
 
                 comparison_df = build_comparison_table(
+                    original_ticket=selected_ticket,
+                    updated_ticket=selected_ticket,
                     original_analysis=analysis,
                     updated_analysis=retriage_result["analysis"],
                     original_routing=routing,
@@ -319,6 +386,7 @@ def main() -> None:
                 with col_original:
                     st.markdown("### Original Assessment")
                     render_analysis_cards(
+                        selected_ticket,
                         analysis,
                         routing,
                     )
@@ -326,6 +394,7 @@ def main() -> None:
                 with col_updated:
                     st.markdown("### Updated Assessment")
                     render_analysis_cards(
+                        selected_ticket,
                         retriage_result["analysis"],
                         retriage_result["routing"],
                     )

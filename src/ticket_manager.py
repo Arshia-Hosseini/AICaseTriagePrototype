@@ -7,9 +7,7 @@ from src.config import TICKETS_FILE
 
 
 def _read_tickets_file() -> list[dict[str, Any]]:
-    """
-    read all tickets from the local JSON store.
-    """
+
     file_path = Path(TICKETS_FILE)
 
     if not file_path.exists():
@@ -25,9 +23,7 @@ def _read_tickets_file() -> list[dict[str, Any]]:
 
 
 def _write_tickets_file(tickets: list[dict[str, Any]]) -> None:
-    """
-    overwrite the local JSON.
-    """
+
     file_path = Path(TICKETS_FILE)
 
     with file_path.open("w", encoding="utf-8") as file:
@@ -59,6 +55,13 @@ def _generate_ticket_id(existing_tickets: list[dict[str, Any]]) -> str:
     return f"ticket_{next_number:03d}"
 
 
+def _default_admin_review() -> dict[str, Any]:
+    return {
+        "admin_priority_override": None,
+        "admin_sensitive_override": None,
+    }
+
+
 def create_ticket(
         title: str,
         case_text: str,
@@ -68,7 +71,7 @@ def create_ticket(
         current_queue: str = "",
 ) -> dict[str, Any]:
     """
-    create a new ticket and save it to the local JSON store.
+    Create a new ticket and save it to the local JSON store.
     """
     tickets = _read_tickets_file()
     ticket_id = _generate_ticket_id(tickets)
@@ -85,10 +88,7 @@ def create_ticket(
         "status": "pending",
         "analysis": None,
         "routing": None,
-        "admin_review": {
-            "admin_priority_override": None,
-            "admin_sensitive_override": None,
-        },
+        "admin_review": _default_admin_review(),
         "follow_up_text": "",
         "created_at": now,
         "updated_at": now,
@@ -106,7 +106,8 @@ def update_ticket_triage(
         routing: dict[str, Any],
 ) -> dict[str, Any] | None:
     """
-    update a ticket with AI analysis and routing results.
+    Update a ticket with AI analysis and routing results.
+    Return the updated ticket, or None if not found.
     """
     tickets = _read_tickets_file()
     now = datetime.now(UTC).isoformat()
@@ -119,10 +120,55 @@ def update_ticket_triage(
             ticket["updated_at"] = now
 
             if "admin_review" not in ticket or not isinstance(ticket["admin_review"], dict):
-                ticket["admin_review"] = {
-                    "admin_priority_override": None,
-                    "admin_sensitive_override": None,
-                }
+                ticket["admin_review"] = _default_admin_review()
+
+            _write_tickets_file(tickets)
+            return ticket
+
+    return None
+
+
+def update_admin_review(
+        ticket_id: str,
+        priority_override: bool | None = None,
+        sensitive_override: bool | None = None,
+) -> dict[str, Any] | None:
+    """
+    Update admin override fields for a ticket.
+    """
+    tickets = _read_tickets_file()
+    now = datetime.now(UTC).isoformat()
+
+    for ticket in tickets:
+        if ticket.get("id") == ticket_id:
+            if "admin_review" not in ticket or not isinstance(ticket["admin_review"], dict):
+                ticket["admin_review"] = _default_admin_review()
+
+            if priority_override is not None:
+                ticket["admin_review"]["admin_priority_override"] = priority_override
+
+            if sensitive_override is not None:
+                ticket["admin_review"]["admin_sensitive_override"] = sensitive_override
+
+            ticket["updated_at"] = now
+
+            _write_tickets_file(tickets)
+            return ticket
+
+    return None
+
+
+def reset_admin_review(ticket_id: str) -> dict[str, Any] | None:
+    """
+    Reset admin overrides for a ticket back to the AI-only state.
+    """
+    tickets = _read_tickets_file()
+    now = datetime.now(UTC).isoformat()
+
+    for ticket in tickets:
+        if ticket.get("id") == ticket_id:
+            ticket["admin_review"] = _default_admin_review()
+            ticket["updated_at"] = now
 
             _write_tickets_file(tickets)
             return ticket
